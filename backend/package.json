@@ -1,0 +1,28 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/server.ts",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:undo": "sequelize-cli db:migrate:undo"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "cors": "^2.8.6",
+    "fastify": "^5.8.5",
+    "mysql2": "^3.22.3",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "sequelize-cli": "^6.6.5",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
+  }
+}

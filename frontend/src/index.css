@@ -1,0 +1,35 @@
+@import "tailwindcss";
+@source "../node_modules/primereact";
+
+body {
+  background-color: #f8f9fc; /* Fundo cinza bem claro das referências */
+  color: #1f2937; /* Texto escuro */
+  margin: 0;
+}
+
+/* Customização para o TabView do PrimeReact ficar mais limpo */
+.custom-tabview .p-tabview-nav {
+  border-bottom: 1px solid #f3f4f6;
+  background: white;
+  padding: 0 1rem;
+}
+
+.custom-tabview .p-tabview-nav li .p-tabview-nav-link {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #6b7280;
+  font-weight: 600;
+  padding: 1.25rem 1rem;
+  box-shadow: none !important;
+}
+
+.custom-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  color: #0b3296;
+  border-bottom-color: #0b3296;
+}
+
+.custom-tabview .p-tabview-panels {
+  background: transparent;
+  padding: 0;
+}

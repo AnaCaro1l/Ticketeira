@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "root",
+    "password": "241701",
+    "database": "ticketeira",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
