@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   User, 
@@ -115,7 +115,7 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in pb-12 px-4 sm:px-0">
+    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in pb-12">
       
       <div className="mb-6 pt-4">
         <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Perfil</h1>

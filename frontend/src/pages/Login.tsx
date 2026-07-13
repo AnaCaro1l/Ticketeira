@@ -57,7 +57,7 @@ export const Login: React.FC = () => {
         <span className="hidden sm:inline">Voltar para o início</span>
       </button>
 
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-8 md:p-10">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-6 md:p-10">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 text-3xl font-extrabold text-[#0b3296] tracking-tight mb-8">
           <Ticket size={32} />

@@ -17,7 +17,7 @@ export const Button: React.FC<ButtonProps> = ({ variant = 'primary', className, 
   return (
     <PrimeButton
       className={classNames(
-        'font-semibold rounded-lg px-4 py-2 w-full sm:w-auto transition-colors',
+        'font-semibold rounded-lg px-4 py-2 transition-colors',
         variantClasses[variant],
         className
       )}

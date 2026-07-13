@@ -1,12 +1,14 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Search, Ticket, User } from 'lucide-react';
+import { Button } from "../components/ui/Button";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -19,7 +21,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen font-sans flex flex-col text-gray-800">
-      
+
       {/* Header Desktop */}
       <header className="hidden md:flex items-center justify-between px-8 py-4 bg-white border-b border-gray-100 sticky top-0 z-50">
         <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-[#0b3296] tracking-tight">
@@ -27,13 +29,18 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <span>UniTick</span>
         </Link>
         <nav className="flex gap-6">
+          <Button
+            variant="light"
+            label="+ Criar Evento"
+            className="py-1.5 px-4 text-sm border-dashed border-gray-300 text-[#0b3296] hover:bg-blue-50 transition-colors"
+            onClick={() => navigate('/event/create')}
+          />
           {navItems.map((item) => (
             <Link
               key={item.name}
               to={item.path}
-              className={`flex items-center gap-2 text-sm font-medium transition-colors ${
-                currentPath === item.path ? 'text-[#0b3296]' : 'text-gray-500 hover:text-[#0b3296]'
-              }`}
+              className={`flex items-center gap-2 text-sm font-medium transition-colors ${currentPath === item.path ? 'text-[#0b3296]' : 'text-gray-500 hover:text-[#0b3296]'
+                }`}
             >
               {item.name}
             </Link>
@@ -59,18 +66,17 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <Link
             key={item.name}
             to={item.path}
-            className={`flex flex-col items-center gap-1 p-2 transition-all ${
-              currentPath === item.path 
-                ? 'text-[#0b3296]' 
+            className={`flex flex-col items-center gap-1 p-2 transition-all ${currentPath === item.path
+                ? 'text-[#0b3296]'
                 : 'text-gray-400 hover:text-gray-600'
-            }`}
+              }`}
           >
             {item.icon}
             <span className="text-[10px] font-medium">{item.name}</span>
           </Link>
         ))}
       </nav>
-      
+
     </div>
   );
 };

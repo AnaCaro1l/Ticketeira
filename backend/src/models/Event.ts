@@ -1,7 +1,18 @@
 import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
 
-export class Event extends Model {}
+export class Event extends Model {
+  // Declarando para o TypeScript
+  declare id: number;
+  declare title: string;
+  declare description: string;
+  declare date: Date;
+  declare time: string;
+  declare location: string;
+  declare imageUrl: string;
+  declare tag: string;
+  declare ageRating: string;
+}
 
 Event.init(
   {
@@ -22,18 +33,30 @@ Event.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
-    price: {
-      type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
+    time: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-    availableTickets: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    location: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    imageUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    tag: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    ageRating: {
+      type: DataTypes.STRING,
+      defaultValue: 'Livre',
     },
   },
   {
     sequelize,
     tableName: 'events',
-    timestamps: true, 
+    timestamps: true,
   }
 );
