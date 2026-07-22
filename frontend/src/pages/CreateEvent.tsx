@@ -103,7 +103,6 @@ export const CreateEvent: React.FC = () => {
 
     return (
         <div className="max-w-2xl mx-auto pb-12 animate-fade-in">
-            {/* Cabeçalho de Voltar */}
             <div className="flex items-center gap-2 pt-4 mb-6">
                 <button
                     onClick={() => navigate(-1)}
@@ -116,8 +115,6 @@ export const CreateEvent: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-
-                {/* Seção: Informações Básicas */}
                 <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm space-y-4">
                     <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">
                         Informações Básicas
@@ -154,7 +151,6 @@ export const CreateEvent: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Seção: Data, Hora e Local */}
                 <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm space-y-4">
                     <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">
                         Data, Hora e Local
@@ -206,7 +202,6 @@ export const CreateEvent: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Seção: Identidade Visual e Regras */}
                 <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm space-y-4">
                     <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">
                         Visual & Classificação
@@ -217,7 +212,6 @@ export const CreateEvent: React.FC = () => {
                             <ImageIcon size={16} className="text-gray-400" /> Imagem de Capa do Evento
                         </label>
 
-                        {/* Componente de Upload Moderno com Preview nativo do Tailwind */}
                         <div className="flex flex-col gap-2">
                             {!selectedImage ? (
                                 <label
@@ -248,13 +242,11 @@ export const CreateEvent: React.FC = () => {
                                 </label>
                             ) : (
                                 <div className="relative w-full h-48 md:h-64 rounded-xl overflow-hidden border border-gray-200 shadow-sm group">
-                                    {/* Preview em tempo real da imagem usando URL.createObjectURL */}
                                     <img
                                         src={URL.createObjectURL(selectedImage)}
                                         alt="Preview da Capa"
                                         className="w-full h-full object-cover"
                                     />
-                                    {/* Overlay escuro que aparece no hover com o botão de remover */}
                                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                                         <button
                                             type="button"
@@ -302,7 +294,6 @@ export const CreateEvent: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Seção: Tipos de Ingresso */}
                 <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm space-y-4">
                     <div className="flex items-center justify-between mb-2">
                         <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">
@@ -320,7 +311,6 @@ export const CreateEvent: React.FC = () => {
                     <div className="space-y-4">
                         {tickets.map((ticket, index) => (
                             <div key={index} className="relative bg-gray-50 border border-gray-200 rounded-xl p-4">
-                                {/* Botão de excluir ingresso (só aparece se tiver mais de 1) */}
                                 {tickets.length > 1 && (
                                     <button
                                         type="button"

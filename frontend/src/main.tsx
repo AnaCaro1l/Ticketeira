@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import { PrimeReactProvider } from 'primereact/api';
 import App from './App.tsx'
 
-// Estilos do PrimeReact (Tema escuro padrão)
 import 'primereact/resources/themes/lara-light-blue/theme.css'; 
 import 'primereact/resources/primereact.min.css';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRoutes } from './routes'; // Importa o index da pasta routes
+import { AppRoutes } from './routes';
 
 function App() {
   return <AppRoutes />;

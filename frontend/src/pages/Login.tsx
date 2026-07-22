@@ -48,7 +48,6 @@ export const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 font-sans text-gray-800 animate-fade-in relative">
-      {/* Botão de Voltar para a Home */}
       <button
         onClick={() => navigate("/")}
         className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-2 text-gray-500 hover:text-[#0b3296] transition-colors font-medium text-sm p-2 -ml-2 rounded-lg hover:bg-gray-100"
@@ -58,13 +57,11 @@ export const Login: React.FC = () => {
       </button>
 
       <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 p-6 md:p-10">
-        {/* Logo */}
         <div className="flex items-center justify-center gap-2 text-3xl font-extrabold text-[#0b3296] tracking-tight mb-8">
           <Ticket size={32} />
           <span>UniTick</span>
         </div>
 
-        {/* Cabeçalho do Formulário */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">
             {isRegistering ? "Crie sua conta" : "Bem-vindo de volta!"}
@@ -76,7 +73,6 @@ export const Login: React.FC = () => {
           </p>
         </div>
 
-        {/* Formulário */}
         <form onSubmit={handleSubmit} className="space-y-5">
           {isRegistering && (
             <Input
@@ -127,7 +123,6 @@ export const Login: React.FC = () => {
             </div>
           )}
 
-          {/* Exibição de erro */}
           {errorMessage && (
             <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium">
               {errorMessage}
@@ -149,7 +144,6 @@ export const Login: React.FC = () => {
           </Button>
         </form>
 
-        {/* Divisor */}
         <div className="relative flex items-center py-6">
           <div className="flex-grow border-t border-gray-200"></div>
           <span className="flex-shrink-0 mx-4 text-gray-400 text-sm">
@@ -158,7 +152,6 @@ export const Login: React.FC = () => {
           <div className="flex-grow border-t border-gray-200"></div>
         </div>
 
-        {/* Logins Sociais */}
         <div className="grid grid-cols-2 gap-4">
           <Button
             type="button"
@@ -178,7 +171,6 @@ export const Login: React.FC = () => {
           </Button>
         </div>
 
-        {/* Alternar entre Login e Cadastro */}
         <p className="text-center text-sm text-gray-500 mt-8">
           {isRegistering ? "Já tem uma conta? " : "Ainda não tem conta? "}
           <button

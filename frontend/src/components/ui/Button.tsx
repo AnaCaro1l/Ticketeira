@@ -8,7 +8,7 @@ interface ButtonProps extends PrimeButtonProps {
 
 export const Button: React.FC<ButtonProps> = ({ variant = 'primary', className, ...props }) => {
   const variantClasses = {
-    primary: 'bg-[#0b3296] hover:bg-[#082570] text-white border-transparent shadow-sm', // Azul escuro UniTick
+    primary: 'bg-[#0b3296] hover:bg-[#082570] text-white border-transparent shadow-sm',
     secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-800 border-transparent',
     outline: 'bg-transparent border-[#0b3296] text-[#0b3296] hover:bg-blue-50',
     light: 'bg-white border border-gray-200 text-[#0b3296] hover:bg-gray-200',

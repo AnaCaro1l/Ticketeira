@@ -7,7 +7,6 @@ export const Checkout: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<'pix' | 'credit'>('pix');
   const [fileUploaded, setFileUploaded] = useState<string | null>(null);
 
-  // Simulação de upload de arquivo
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFileUploaded(e.target.files[0].name);
@@ -16,14 +15,11 @@ export const Checkout: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-fade-in pb-12">
-      
-      {/* Cabeçalho */}
       <div className="text-center md:text-left mb-8">
         <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Finalizar Compra</h1>
         <p className="text-gray-500 mt-1">Preencha os dados abaixo para garantir seus ingressos.</p>
       </div>
 
-      {/* Seção 1: Detalhes do Comprador */}
       <section className="bg-white border border-gray-100 rounded-2xl p-5 md:p-6 shadow-sm space-y-5">
         <div className="flex items-center gap-2 mb-2">
           <User className="text-[#0b3296]" size={20} />
@@ -34,7 +30,7 @@ export const Checkout: React.FC = () => {
           <Input 
             label="Nome Completo" 
             placeholder="Ex: João da Silva" 
-            defaultValue="Jane Doe" // Baseado na sua imagem de ref
+            defaultValue="Jane Doe"
           />
           <Input 
             label="E-mail" 
@@ -50,7 +46,6 @@ export const Checkout: React.FC = () => {
         </div>
       </section>
 
-      {/* Seção 2: Verificação de Estudante */}
       <section className="bg-white border border-gray-100 rounded-2xl p-5 md:p-6 shadow-sm space-y-4">
         <div className="flex items-center gap-2">
           <FileText className="text-[#0b3296]" size={20} />
@@ -91,7 +86,6 @@ export const Checkout: React.FC = () => {
         </div>
       </section>
 
-      {/* Seção 3: Método de Pagamento */}
       <section className="bg-white border border-gray-100 rounded-2xl p-5 md:p-6 shadow-sm space-y-4">
         <div className="flex items-center gap-2 mb-2">
           <CreditCard className="text-[#0b3296]" size={20} />
@@ -99,7 +93,6 @@ export const Checkout: React.FC = () => {
         </div>
 
         <div className="space-y-3">
-          {/* Opção PIX */}
           <label 
             className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${
               paymentMethod === 'pix' ? 'border-[#0b3296] bg-blue-50/30 ring-1 ring-[#0b3296]' : 'border-gray-200 hover:bg-gray-50'
@@ -124,7 +117,6 @@ export const Checkout: React.FC = () => {
             </span>
           </label>
 
-          {/* Opção Cartão de Crédito */}
           <label 
             className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${
               paymentMethod === 'credit' ? 'border-[#0b3296] bg-blue-50/30 ring-1 ring-[#0b3296]' : 'border-gray-200 hover:bg-gray-50'
@@ -145,7 +137,6 @@ export const Checkout: React.FC = () => {
         </div>
       </section>
 
-      {/* Seção 4: Resumo do Pedido */}
       <section className="bg-white border border-gray-100 rounded-2xl p-5 md:p-6 shadow-sm">
         <h2 className="text-lg font-bold text-gray-900 mb-4">Resumo do Pedido</h2>
         

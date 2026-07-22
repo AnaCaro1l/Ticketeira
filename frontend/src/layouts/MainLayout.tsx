@@ -22,7 +22,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen font-sans flex flex-col text-gray-800">
 
-      {/* Header Desktop */}
       <header className="hidden md:flex items-center justify-between px-8 py-4 bg-white border-b border-gray-100 sticky top-0 z-50">
         <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-[#0b3296] tracking-tight">
           <Ticket size={28} />
@@ -48,7 +47,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </nav>
       </header>
 
-      {/* Header Mobile */}
       <header className="md:hidden flex items-center justify-center p-4 bg-white border-b border-gray-100 sticky top-0 z-50">
         <Link to="/" className="flex items-center gap-2 text-xl font-bold text-[#0b3296] tracking-tight">
           <Ticket size={24} />
@@ -60,7 +58,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {children}
       </main>
 
-      {/* Navigation Mobile */}
       <nav className="md:hidden fixed bottom-0 w-full bg-white border-t border-gray-100 flex justify-around items-center p-3 z-50 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
         {navItems.map((item) => (
           <Link

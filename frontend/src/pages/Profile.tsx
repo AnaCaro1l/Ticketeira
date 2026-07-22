@@ -15,9 +15,8 @@ import {
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 
-// Função auxiliar para gerar as iniciais do nome (Ex: "João Silva" -> "JS")
 const getInitials = (name: string) => {
-  if (!name) return 'UN'; // Retorna 'UN' (Unknown) se não tiver nome
+  if (!name) return 'UN';
   const parts = name.trim().split(' ');
   if (parts.length >= 2) {
     return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
@@ -28,14 +27,12 @@ const getInitials = (name: string) => {
 export const Profile: React.FC = () => {
   const navigate = useNavigate();
   
-  // Resgatando os dados reais do localStorage
   const token = localStorage.getItem('@UniTick:token');
   const savedUser = localStorage.getItem('@UniTick:user');
   
   const isAuthenticated = !!token;
   const user = savedUser ? JSON.parse(savedUser) : null;
 
-  // --- TELA DE VISITANTE (NÃO LOGADO) ---
   if (!isAuthenticated || !user) {
     return (
       <div className="max-w-md mx-auto animate-fade-in flex flex-col items-center justify-center pt-16 pb-12 px-4 text-center">
@@ -71,10 +68,6 @@ export const Profile: React.FC = () => {
     );
   }
 
-  // --- TELA DO PERFIL LOGADO ---
-  
-  // Mapeando os dados reais do banco. 
-  // Nota: Como 'university' e 'isStudentVerified' ainda não existem na sua tabela User, deixamos estáticos por enquanto.
   const userProfile = {
     name: user.name,
     email: user.email,

@@ -17,14 +17,12 @@ export const EventDetails: React.FC = () => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Estado local simulando os tipos de ingresso para o carrinho funcionar
   const [tickets, setTickets] = useState([
     { id: 1, name: "Pista - Meia Entrada", description: "Obrigatório apresentação de carteirinha.", price: 40.0, available: true, quantity: 0 },
     { id: 2, name: "Área VIP", description: "Acesso à pista e área VIP com bar exclusivo.", price: 90.0, available: true, quantity: 0 },
     { id: 3, name: "Camarote", description: "Vista privilegiada e open bar.", price: 150.0, available: false, quantity: 0 },
   ]);
 
-  // Busca os dados do evento no banco de dados
   useEffect(() => {
     const fetchEventDetails = async () => {
       if (!id) return;
@@ -41,7 +39,6 @@ export const EventDetails: React.FC = () => {
     fetchEventDetails();
   }, [id, navigate]);
 
-  // Função para adicionar ou remover ingressos do carrinho
   const updateQuantity = (ticketId: number, delta: number) => {
     setTickets((currentTickets) =>
       currentTickets.map((ticket) => {
@@ -69,7 +66,6 @@ export const EventDetails: React.FC = () => {
 
   return (
     <div className="animate-fade-in pb-40 md:pb-32">
-      {/* Imagem de Capa do Evento */}
       <div className="relative w-full h-64 md:h-96 rounded-b-3xl md:rounded-3xl overflow-hidden shadow-sm -mt-4 md:mt-0">
         <img
           src={imageUrl}
@@ -83,12 +79,10 @@ export const EventDetails: React.FC = () => {
       </div>
 
       <div className="max-w-3xl mx-auto px-2 mt-6 space-y-8">
-        {/* Título */}
         <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
           {event.title}
         </h1>
 
-        {/* Card de Informações (Data, Hora, Local) */}
         <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm space-y-4">
           <div className="flex items-start gap-4">
             <div className="bg-blue-50 p-2.5 rounded-xl text-[#0b3296]">
@@ -123,7 +117,6 @@ export const EventDetails: React.FC = () => {
           </div>
         </div>
 
-        {/* Sobre o Evento */}
         <section>
           <h2 className="text-xl font-bold text-gray-900 mb-3">
             Sobre o Evento
@@ -135,7 +128,6 @@ export const EventDetails: React.FC = () => {
 
         <hr className="border-gray-200" />
 
-        {/* Seleção de Ingressos */}
         <section className="space-y-4">
           <h2 className="text-xl font-bold text-gray-900">
             Selecionar Ingressos
@@ -203,7 +195,6 @@ export const EventDetails: React.FC = () => {
         </section>
       </div>
 
-      {/* Barra Inferior Fixa (Sticky Bottom Bar) */}
       <div className="fixed bottom-[72px] left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-40 md:bottom-auto md:top-full md:sticky md:mt-8 md:rounded-2xl md:border md:shadow-lg md:max-w-3xl md:mx-auto">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div>

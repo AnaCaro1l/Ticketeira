@@ -4,7 +4,6 @@ import { Card } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 
-// Mock estendido para testarmos os filtros
 const allEvents = [
   {
     id: "1",
@@ -80,7 +79,6 @@ export const Search: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
 
-  // Lógica simples de filtro
   const filteredEvents = allEvents.filter((event) => {
     const matchesSearch =
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -92,9 +90,7 @@ export const Search: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-fade-in pb-12">
-      {/* Cabeçalho Fixo (Mobile) / Normal (Desktop) */}
       <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm sticky top-[60px] md:static z-40">
-        {/* Barra de Busca */}
         <div className="flex gap-3 mb-4 h-12">
           <div className="relative flex-1 h-full">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
@@ -116,7 +112,6 @@ export const Search: React.FC = () => {
           </Button>
         </div>
 
-        {/* Categorias (Pills) com scroll horizontal */}
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           {categories.map((category) => (
             <button
@@ -134,7 +129,6 @@ export const Search: React.FC = () => {
         </div>
       </div>
 
-      {/* Resultados */}
       <div className="px-2 md:px-0">
         <h2 className="text-lg font-bold text-gray-900 mb-4">
           {filteredEvents.length}{" "}

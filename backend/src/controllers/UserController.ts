@@ -2,12 +2,10 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { User } from '../models';
 
 export const UserController = {
-  // Criar um novo usuário
   async create(request: FastifyRequest, reply: FastifyReply) {
     try {
       const { name, email, passwordHash } = request.body as any;
 
-      // Nota: Em um projeto real, faríamos o hash da senha aqui usando bibliotecas como bcrypt
       const user = await User.create({
         name,
         email,
@@ -21,7 +19,6 @@ export const UserController = {
     }
   },
 
-  // Buscar usuário por ID (útil para a tela de Perfil)
   async getById(request: FastifyRequest, reply: FastifyReply) {
     try {
       const { id } = request.params as { id: string };
@@ -38,7 +35,6 @@ export const UserController = {
     }
   },
   
-  // Atualizar dados de um usuário
   async update(request: FastifyRequest, reply: FastifyReply) {
     try {
       const { id } = request.params as { id: string };
@@ -50,8 +46,6 @@ export const UserController = {
         return reply.status(404).send({ error: 'Usuário não encontrado' });
       }
 
-      // O Sequelize é inteligente: ele só vai atualizar no banco os campos 
-      // que você realmente enviou no corpo da requisição.
       await user.update({
         name: name !== undefined ? name : user.getDataValue('name'),
         email: email !== undefined ? email : user.getDataValue('email'),

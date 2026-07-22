@@ -67,7 +67,6 @@ export const Home: React.FC = () => {
           className="h-full flex flex-col border-none ring-1 ring-gray-100 hover:shadow-lg transition-shadow"
           onClick={() => navigate(`/event/${event.id}`)}
         >
-          {/* Adicionamos o cursor-pointer e o onClick no título também para facilitar o clique */}
           <h3
             className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 cursor-pointer hover:text-[#0b3296]"
           >
@@ -77,7 +76,6 @@ export const Home: React.FC = () => {
           <div className="space-y-2 mb-4 flex-1">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Calendar size={16} className="text-[#0b3296]" />
-              {/* O campo data pode precisar ser formatado dependendo de como o MySQL retorna */}
               <span>{formatarDataBR(event.date, event.time)}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -94,7 +92,6 @@ export const Home: React.FC = () => {
               variant="primary"
               label="Comprar"
               className="py-1.5 px-4 text-sm"
-              // Rota ajustada para o singular: /event/id
               onClick={() => navigate(`/event/${event.id}`)}
             />
           </div>
@@ -105,7 +102,6 @@ export const Home: React.FC = () => {
 
   return (
     <div className="space-y-12 animate-fade-in pb-12">
-      {/* Banner Herói */}
       <section className="bg-white rounded-3xl p-6 md:p-14 text-center border border-gray-100 shadow-sm mt-4">
         <div className="max-w-2xl mx-auto space-y-6">
           <Badge
@@ -124,7 +120,6 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Exibição de Loading ou Conteúdo Dinâmico */}
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20">
           <Loader2 size={40} className="animate-spin text-[#0b3296] mb-4" />
@@ -138,7 +133,6 @@ export const Home: React.FC = () => {
         </div>
       ) : (
         <>
-          {/* Carrossel de Eventos */}
           <section>
             <div className="flex items-center gap-2 mb-6">
               <Flame className="text-orange-500" size={24} />

@@ -1,6 +1,5 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('tickets', {
@@ -15,19 +14,19 @@ module.exports = {
         allowNull: false,
         references: { model: 'events', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'CASCADE' // Se o evento for apagado, os ingressos dele também são
+        onDelete: 'CASCADE'
       },
       userId: {
         type: Sequelize.INTEGER,
-        allowNull: true, // Começa nulo, pois o ingresso é criado antes de ser vendido
+        allowNull: true,
         references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL' // Se o usuário for apagado, o ingresso volta a ficar sem dono
+        onDelete: 'SET NULL'
       },
       status: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'available' // Pode ser: 'available', 'sold', 'cancelled'
+        defaultValue: 'available'
       },
       createdAt: {
         type: Sequelize.DATE,

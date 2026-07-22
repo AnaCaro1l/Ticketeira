@@ -2,7 +2,6 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../config/database';
 
 export class Event extends Model {
-  // Declarando para o TypeScript
   declare id: number;
   declare title: string;
   declare description: string;
