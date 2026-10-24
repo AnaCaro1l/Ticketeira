@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Ticket,
   Mail,
@@ -18,6 +18,7 @@ export const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -33,7 +34,8 @@ export const Login: React.FC = () => {
       } else {
         await authService.login({ email, password });
 
-        navigate("/");
+        const fromPath = (typeof location.state?.from === "string" ? location.state.from : location.state?.from?.pathname) || "/";
+        navigate(fromPath, { replace: true });
       }
     } catch (error: any) {
       console.error(error);

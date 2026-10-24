@@ -30,18 +30,15 @@ export const Checkout: React.FC = () => {
           <Input 
             label="Nome Completo" 
             placeholder="Ex: João da Silva" 
-            defaultValue="Jane Doe"
           />
           <Input 
             label="E-mail" 
             type="email" 
             placeholder="joao@universidade.edu.br" 
-            defaultValue="jane.doe@university.edu"
           />
           <Input 
             label="Telefone" 
             placeholder="(00) 00000-0000" 
-            defaultValue="+1 (555) 000-0000"
           />
         </div>
       </section>

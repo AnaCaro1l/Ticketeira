@@ -63,7 +63,9 @@ export const EventController = {
 
   async getAll(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const events = await Event.findAll();
+      const events = await Event.findAll({
+        include: [{ model: Ticket, as: 'ticketTypes' }]
+      });
       return reply.status(200).send(events);
     } catch (error) {
       request.log.error(error);
@@ -75,7 +77,9 @@ export const EventController = {
     try {
       const { id } = request.params as { id: string };
 
-      const event = await Event.findByPk(id);
+      const event = await Event.findByPk(id, {
+        include: [{ model: Ticket, as: 'ticketTypes' }]
+      });
 
       if (!event) {
         return reply.status(404).send({ error: 'Evento não encontrado' });

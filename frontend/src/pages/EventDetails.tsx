@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Calendar, Clock, MapPin, Minus, Plus, ArrowRight } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
@@ -7,21 +7,40 @@ import { eventService, type Event } from "../services/eventsService";
 import defaultEventImage from "../assets/images/DefaultImage.png";
 import { formatarDataBR } from '../utils/date';
 
+type TicketOption = {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  available: boolean;
+  quantity: number;
+  availableQuantity: number;
+};
+
+const normalizeTicketOptions = (ticketTypes: Event['ticketTypes'] = []): TicketOption[] =>
+  ticketTypes.map((ticket) => {
+    const availableQuantity = Number(ticket.availableQuantity) || 0;
+
+    return {
+      id: ticket.id,
+      name: ticket.name,
+      description: ticket.description || 'Ingresso para o evento.',
+      price: Number(ticket.price) || 0,
+      available: availableQuantity > 0,
+      quantity: 0,
+      availableQuantity,
+    };
+  });
+
 export const EventDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const navigate = useNavigate();
-  
+
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const [tickets, setTickets] = useState([
-    { id: 1, name: "Pista - Meia Entrada", description: "Obrigatório apresentação de carteirinha.", price: 40.0, available: true, quantity: 0 },
-    { id: 2, name: "Área VIP", description: "Acesso à pista e área VIP com bar exclusivo.", price: 90.0, available: true, quantity: 0 },
-    { id: 3, name: "Camarote", description: "Vista privilegiada e open bar.", price: 150.0, available: false, quantity: 0 },
-  ]);
+  const [tickets, setTickets] = useState<TicketOption[]>([]);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -29,7 +48,8 @@ export const EventDetails: React.FC = () => {
       try {
         const data = await eventService.getEventById(id);
         setEvent(data);
-      } catch (error) {
+        setTickets(normalizeTicketOptions(data.ticketTypes));
+      } catch (error: any) {
         setErrorMessage(error.message || "Erro desconhecido ao carregar o evento.");
       } finally {
         setIsLoading(false);
@@ -42,17 +62,33 @@ export const EventDetails: React.FC = () => {
   const updateQuantity = (ticketId: number, delta: number) => {
     setTickets((currentTickets) =>
       currentTickets.map((ticket) => {
-        if (ticket.id === ticketId) {
-          const newQuantity = Math.max(0, ticket.quantity + delta);
-          return { ...ticket, quantity: newQuantity };
+        if (ticket.id !== ticketId) {
+          return ticket;
         }
-        return ticket;
+
+        const nextQuantity = Math.min(
+          ticket.availableQuantity,
+          Math.max(0, ticket.quantity + delta)
+        );
+
+        return { ...ticket, quantity: nextQuantity };
       })
     );
   };
 
-  const totalTickets = tickets.reduce((acc, ticket) => acc + ticket.quantity, 0);
-  const totalAmount = tickets.reduce((acc, ticket) => acc + ticket.price * ticket.quantity, 0);
+  const totalTickets = useMemo(
+    () => tickets.reduce((acc, ticket) => acc + ticket.quantity, 0),
+    [tickets]
+  );
+
+  const totalAmount = useMemo(
+    () => tickets.reduce((acc, ticket) => acc + ticket.price * ticket.quantity, 0),
+    [tickets]
+  );
+
+  if (errorMessage) {
+    return <div className="p-8 text-center text-red-500">{errorMessage}</div>;
+  }
 
   if (isLoading) {
     return <div className="p-8 text-center text-gray-500">Carregando detalhes...</div>;
@@ -134,63 +170,71 @@ export const EventDetails: React.FC = () => {
           </h2>
 
           <div className="space-y-3">
-            {tickets.map((ticket) => (
-              <div
-                key={ticket.id}
-                className={`flex items-center justify-between p-4 rounded-2xl border ${
-                  ticket.quantity > 0
-                    ? "border-[#0b3296] bg-blue-50/30"
-                    : "border-gray-200 bg-white"
-                } transition-all`}
-              >
-                <div className="flex-1 pr-4">
-                  <h3
-                    className={`font-bold ${
-                      !ticket.available ? "text-gray-400" : "text-gray-900"
-                    }`}
-                  >
-                    {ticket.name}
-                  </h3>
-                  <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                    {ticket.description}
-                  </p>
-                  <p
-                    className={`font-bold mt-2 ${
-                      !ticket.available ? "text-gray-400" : "text-[#0b3296]"
-                    }`}
-                  >
-                    R$ {ticket.price.toFixed(2).replace(".", ",")}
-                  </p>
-                </div>
-
-                {ticket.available ? (
-                  <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl p-1">
-                    <button
-                      onClick={() => updateQuantity(ticket.id, -1)}
-                      disabled={ticket.quantity === 0}
-                      className="p-1.5 text-gray-500 hover:text-[#0b3296] disabled:opacity-30 transition-colors"
-                    >
-                      <Minus size={18} />
-                    </button>
-                    <span className="w-6 text-center font-bold text-gray-900">
-                      {ticket.quantity}
-                    </span>
-                    <button
-                      onClick={() => updateQuantity(ticket.id, 1)}
-                      className="p-1.5 text-gray-500 hover:text-[#0b3296] transition-colors"
-                    >
-                      <Plus size={18} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="bg-gray-100 px-3 py-1.5 rounded-lg">
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                      Esgotado
-                    </span>
-                  </div>
-                )}
+            {tickets.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-5 text-sm text-gray-500">
+                Nenhum ingresso disponível para este evento no momento.
               </div>
-            ))}
+            ) : (
+              tickets.map((ticket) => (
+                <div
+                  key={ticket.id}
+                  className={`flex items-center justify-between gap-4 p-4 rounded-2xl border ${
+                    ticket.quantity > 0
+                      ? "border-[#0b3296] bg-blue-50/30"
+                      : "border-gray-200 bg-white"
+                  } transition-all overflow-hidden`}
+                >
+                  <div className="min-w-0 flex-1 pr-2">
+                    <h3
+                      className={`font-bold break-words ${
+                        !ticket.available ? "text-gray-400" : "text-gray-900"
+                      }`}
+                    >
+                      {ticket.name}
+                    </h3>
+                    <p className="mt-1 text-xs text-gray-500 line-clamp-2 break-words">
+                      {ticket.description}
+                    </p>
+                    <p
+                      className={`mt-2 font-bold ${
+                        !ticket.available ? "text-gray-400" : "text-[#0b3296]"
+                      }`}
+                    >
+                      R$ {ticket.price.toFixed(2).replace(".", ",")}
+                    </p>
+                  </div>
+
+                  {ticket.available ? (
+                    <div className="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl p-1 shrink-0">
+                      <button
+                        onClick={() => updateQuantity(ticket.id, -1)}
+                        disabled={ticket.quantity === 0}
+                        className="p-1.5 text-gray-500 hover:text-[#0b3296] disabled:opacity-30 transition-colors"
+                        type="button"
+                      >
+                        <Minus size={18} />
+                      </button>
+                      <span className="w-6 text-center font-bold text-gray-900">
+                        {ticket.quantity}
+                      </span>
+                      <button
+                        onClick={() => updateQuantity(ticket.id, 1)}
+                        className="p-1.5 text-gray-500 hover:text-[#0b3296] transition-colors"
+                        type="button"
+                      >
+                        <Plus size={18} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="bg-gray-100 px-3 py-1.5 rounded-lg shrink-0">
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        Esgotado
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </section>
       </div>

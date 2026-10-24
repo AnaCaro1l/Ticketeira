@@ -1,71 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search as SearchIcon, Filter, Calendar, MapPin } from "lucide-react";
 import { Card } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
-
-const allEvents = [
-  {
-    id: "1",
-    title: "Spring Fling: Midnight Gala",
-    category: "festa",
-    date: "12 Abr",
-    location: "West Pavilion",
-    price: "R$ 25,00",
-    image:
-      "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=600",
-    tag: "Live Music",
-    tagColor: "blue" as const,
-  },
-  {
-    id: "2",
-    title: "Finais do Basquete",
-    category: "esporte",
-    date: "02 Mai",
-    location: "Ginásio Principal",
-    price: "R$ 15,00",
-    image:
-      "https://images.unsplash.com/photo-1504450758481-7338eba7524a?auto=format&fit=crop&q=80&w=600",
-    tag: "Esportes",
-    tagColor: "red" as const,
-  },
-  {
-    id: "3",
-    title: "Baile da Odonto",
-    category: "festa",
-    date: "05 Jun",
-    location: "Clube Principal",
-    price: "R$ 35,00",
-    image:
-      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=600",
-    tag: "Open Bar",
-    tagColor: "blue" as const,
-  },
-  {
-    id: "4",
-    title: "Tech Talk: IA",
-    category: "academico",
-    date: "20 Mai",
-    location: "Prédio de TI",
-    price: "Gratuito",
-    image:
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=600",
-    tag: "Palestra",
-    tagColor: "gray" as const,
-  },
-  {
-    id: "5",
-    title: "O Crisol (Teatro)",
-    category: "cultura",
-    date: "18 Abr",
-    location: "Teatro Central",
-    price: "R$ 10,00",
-    image:
-      "https://images.unsplash.com/photo-1507676184212-d0330a15153b?auto=format&fit=crop&q=80&w=600",
-    tag: "Teatro",
-    tagColor: "gray" as const,
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { eventService, type Event } from "../services/eventsService";
+import { getEventPriceDisplay } from "../utils/formatPrice";
+import defaultEventImage from "../assets/images/DefaultImage.png";
+import { formatarDataBR } from "../utils/date";
 
 const categories = [
   { id: "all", label: "Todos" },
@@ -76,15 +18,32 @@ const categories = [
 ];
 
 export const Search: React.FC = () => {
+  const navigate = useNavigate();
+  const [events, setEvents] = useState<Event[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+  
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const data = await eventService.getAllEvents();
+        setEvents(data);
+      } catch (error) {
+        console.error("Erro ao buscar eventos:", error);
+      }
+    };
 
-  const filteredEvents = allEvents.filter((event) => {
+    fetchEvents();
+  }, []);
+
+  const filteredEvents = events.filter((event) => {
     const matchesSearch =
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory =
-      activeCategory === "all" || event.category === activeCategory;
+      activeCategory === "all" ||
+      (event as any).category === activeCategory ||
+      event.tag?.toLowerCase() === activeCategory.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
@@ -143,16 +102,20 @@ export const Search: React.FC = () => {
               <Card
                 key={event.id}
                 hoverEffect
-                className="flex flex-col border-none ring-1 ring-gray-100 h-full"
+                className="flex flex-col border-none ring-1 ring-gray-100 h-full cursor-pointer"
+                onClick={() => navigate(`/event/${event.id}`)}
               >
                 <div className="relative h-40">
                   <img
                     alt={event.title}
-                    src={event.image}
+                    src={event.imageUrl || defaultEventImage}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-3 left-3">
-                    <Badge label={event.tag} color={event.tagColor} />
+                    <Badge 
+                      label={event.tag || "Evento"} 
+                      color={((event as any).tagColor as any) || "blue"} 
+                    />
                   </div>
                 </div>
 
@@ -164,7 +127,7 @@ export const Search: React.FC = () => {
                   <div className="space-y-1.5 mb-4 flex-1">
                     <div className="flex items-center gap-2 text-xs text-gray-600">
                       <Calendar size={14} className="text-[#0b3296]" />
-                      <span>{event.date}</span>
+                      <span>{formatarDataBR(event.date, event.time)}</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-600">
                       <MapPin size={14} className="text-[#0b3296]" />
@@ -174,7 +137,7 @@ export const Search: React.FC = () => {
 
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
                     <span className="text-sm font-bold text-gray-900">
-                      {event.price}
+                      {getEventPriceDisplay(event)}
                     </span>
                     <button className="text-sm font-semibold text-[#0b3296] hover:underline">
                       Ver detalhes

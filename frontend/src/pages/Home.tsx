@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Carousel, type CarouselResponsiveOption } from "primereact/carousel";
-import { Search, Calendar, MapPin, Flame, Loader2 } from "lucide-react";
+import { Calendar, MapPin, Flame, Loader2 } from "lucide-react";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { eventService, type Event } from "../services/eventsService";
 import defaultEventImage from "../assets/images/DefaultImage.png";
 import { formatarDataBR } from "../utils/date";
+import { getEventPriceDisplay } from "../utils/formatPrice";
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -40,9 +41,7 @@ export const Home: React.FC = () => {
     const imageUrl =
       event.imageUrl ||
       defaultEventImage;
-    const priceDisplay = event.price
-      ? `R$ ${Number(event.price).toFixed(2).replace(".", ",")}`
-      : "Gratuito";
+    const priceDisplay = getEventPriceDisplay(event);
 
     const header = (
       <div

@@ -29,5 +29,14 @@ export const authService = {
   logout() {
     localStorage.removeItem('@UniTick:token');
     localStorage.removeItem('@UniTick:user');
+  },
+
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('@UniTick:token');
+  },
+
+  getUser() {
+    const user = localStorage.getItem('@UniTick:user');
+    return user ? JSON.parse(user) : null;
   }
 };

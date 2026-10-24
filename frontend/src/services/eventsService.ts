@@ -8,7 +8,16 @@ export interface Event {
   time: string;
   location: string;
   imageUrl?: string;
-  price?: number;
+  tag?: string;
+  ageRating?: string;
+  price?: number | string;
+  ticketTypes?: {
+    id: number;
+    name: string;
+    description?: string;
+    price: number | string;
+    availableQuantity: number;
+  }[];
 }
 
 export const eventService = {
