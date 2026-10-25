@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Calendar as CalendarIcon, Clock, MapPin, Image as ImageIcon, Tag, ChevronLeft, ShieldAlert, Plus, Trash2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Calendar } from 'primereact/calendar';
 
 import { eventService } from '../services/eventsService';
+import { authService } from '../services/authService';
 
 export const CreateEvent: React.FC = () => {
     const navigate = useNavigate();
+    const { id } = useParams<{ id: string }>();
+    const isEditing = Boolean(id);
     const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -17,7 +20,7 @@ export const CreateEvent: React.FC = () => {
         tag: '',
         ageRating: '18+',
     });
-
+   
     const [eventDate, setEventDate] = useState<Date | null>(null);
     const [eventTime, setEventTime] = useState<Date | null>(null);
 
@@ -26,6 +29,63 @@ export const CreateEvent: React.FC = () => {
     const [tickets, setTickets] = useState([
         { name: '', description: '', price: '', availableQuantity: '' }
     ]);
+
+    useEffect(() => {
+        const loadEventForEditing = async () => {
+            if (!isEditing || !id) return;
+
+            try {
+                const currentUser = authService.getUser();
+                const event = await eventService.getEventById(id);
+
+                if (!event || Number(event.userId) !== Number(currentUser?.id)) {
+                    alert('Você não pode editar este evento.');
+                    navigate('/');
+                    return;
+                }
+
+                setFormData({
+                    title: event.title,
+                    description: event.description,
+                    location: event.location,
+                    tag: event.tag || '',
+                    ageRating: event.ageRating || '18+',
+                });
+
+                if (event.date) {
+                    const parsedDate = new Date(event.date);
+                    if (!Number.isNaN(parsedDate.getTime())) {
+                        setEventDate(parsedDate);
+                    }
+                }
+
+                if (event.time) {
+                    const [hours, minutes] = event.time.split(':').map(Number);
+                    const parsedTime = new Date();
+                    parsedTime.setHours(hours || 0, minutes || 0, 0, 0);
+                    setEventTime(parsedTime);
+                }
+
+                setTickets(
+                    event.ticketTypes && event.ticketTypes.length > 0
+                        ? event.ticketTypes.map((ticket) => ({
+                            name: ticket.name,
+                            description: ticket.description || '',
+                            price: String(ticket.price),
+                            availableQuantity: String(ticket.availableQuantity ?? 0),
+                            totalQuantity: String(ticket.totalQuantity ?? ticket.availableQuantity ?? 0),
+                        }))
+                        : [{ name: '', description: '', price: '', availableQuantity: '' }]
+                );
+            } catch (error) {
+                console.error('Erro ao carregar evento para edição:', error);
+                alert('Não foi possível carregar o evento para edição.');
+                navigate('/');
+            }
+        };
+
+        loadEventForEditing();
+    }, [id, isEditing, navigate]);
 
     const addTicket = () => {
         setTickets([...tickets, { name: '', description: '', price: '', availableQuantity: '' }]);
@@ -62,7 +122,15 @@ export const CreateEvent: React.FC = () => {
         setIsLoading(true);
 
         try {
+            const currentUser = authService.getUser();
+            if (!currentUser?.id) {
+                alert('Você precisa estar logado para criar um evento.');
+                navigate('/login');
+                return;
+            }
+
             const payload = new FormData();
+            payload.append('userId', String(currentUser.id));
             payload.append('title', formData.title);
             payload.append('description', formData.description);
             payload.append('location', formData.location);
@@ -79,16 +147,28 @@ export const CreateEvent: React.FC = () => {
 
             payload.append('image', selectedImage);
 
-            const formattedTickets = tickets.map(t => ({
-                ...t,
-                price: parseFloat(t.price.replace(',', '.')) || 0,
-                availableQuantity: parseInt(t.availableQuantity) || 0
-            }));
+            const formattedTickets = tickets.map(t => {
+                const availableQuantity = parseInt(String(t.availableQuantity)) || 0;
+                const totalQuantity = isEditing ? (parseInt(String((t as any).totalQuantity ?? availableQuantity)) || availableQuantity) : availableQuantity;
+
+                return {
+                    ...t,
+                    price: parseFloat(t.price.replace(',', '.')) || 0,
+                    totalQuantity,
+                    availableQuantity,
+                };
+            });
 
             payload.append('tickets', JSON.stringify(formattedTickets));
 
             for (let [key, value] of (payload as any).entries()) {
                 console.log(`${key}:`, value);
+            }
+
+            if (isEditing && id) {
+                await eventService.updateEvent(id, payload);
+                navigate(`/event/${id}`);
+                return;
             }
 
             await eventService.createEvent(payload);
@@ -111,7 +191,9 @@ export const CreateEvent: React.FC = () => {
                 >
                     <ChevronLeft size={20} />
                 </button>
-                <h1 className="text-2xl font-extrabold text-gray-900">Criar Novo Evento</h1>
+                <h1 className="text-2xl font-extrabold text-gray-900">
+                    {isEditing ? 'Editar Evento' : 'Criar Novo Evento'}
+                </h1>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -357,18 +439,57 @@ export const CreateEvent: React.FC = () => {
                                         />
                                     </div>
 
-                                    <div className="space-y-1 sm:col-span-2">
-                                        <label className="text-xs font-semibold text-gray-700">Quantidade Disponível</label>
-                                        <input
-                                            type="number"
-                                            required
-                                            min="1"
-                                            placeholder="Quantos ingressos desse tipo existem?"
-                                            value={ticket.availableQuantity}
-                                            onChange={(e) => updateTicket(index, 'availableQuantity', e.target.value)}
-                                            className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-[#0b3296] outline-none"
-                                        />
-                                    </div>
+                                    {isEditing ? (
+                                        <>
+                                            <div className="space-y-1">
+                                                <label className="text-xs font-semibold text-gray-700">Quantidade Total</label>
+                                                <input
+                                                    type="number"
+                                                    required
+                                                    min="1"
+                                                    placeholder="Ex: 100"
+                                                    value={(ticket as any).totalQuantity ?? ticket.availableQuantity}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value;
+                                                        const nextTicket = { ...ticket, totalQuantity: value };
+                                                        if (!nextTicket.availableQuantity || Number(nextTicket.availableQuantity) > Number(value)) {
+                                                            nextTicket.availableQuantity = value;
+                                                        }
+                                                        const newTickets = [...tickets];
+                                                        newTickets[index] = nextTicket;
+                                                        setTickets(newTickets);
+                                                    }}
+                                                    className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-[#0b3296] outline-none"
+                                                />
+                                            </div>
+
+                                            <div className="space-y-1">
+                                                <label className="text-xs font-semibold text-gray-700">Disponível</label>
+                                                <input
+                                                    type="number"
+                                                    required
+                                                    min="0"
+                                                    placeholder="Ex: 100"
+                                                    value={ticket.availableQuantity}
+                                                    onChange={(e) => updateTicket(index, 'availableQuantity', e.target.value)}
+                                                    className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-[#0b3296] outline-none"
+                                                />
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="space-y-1 sm:col-span-2">
+                                            <label className="text-xs font-semibold text-gray-700">Quantidade Disponível</label>
+                                            <input
+                                                type="number"
+                                                required
+                                                min="1"
+                                                placeholder="Quantos ingressos desse tipo existem?"
+                                                value={ticket.availableQuantity}
+                                                onChange={(e) => updateTicket(index, 'availableQuantity', e.target.value)}
+                                                className="w-full bg-white border border-gray-200 rounded-lg py-2.5 px-3 text-sm focus:ring-2 focus:ring-[#0b3296] outline-none"
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -381,7 +502,7 @@ export const CreateEvent: React.FC = () => {
                     disabled={isLoading}
                     className="w-full py-4 rounded-xl text-base font-bold shadow-sm flex justify-center items-center"
                 >
-                    {isLoading ? 'Processando...' : 'Publicar Evento'}
+                    {isLoading ? 'Processando...' : isEditing ? 'Salvar Alterações' : 'Publicar Evento'}
                 </Button>
             </form>
         </div>

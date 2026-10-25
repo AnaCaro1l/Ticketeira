@@ -3,6 +3,7 @@ import { sequelize } from '../config/database';
 
 export class Event extends Model {
   declare id: number;
+  declare userId: number;
   declare title: string;
   declare description: string;
   declare date: Date;
@@ -19,6 +20,16 @@ Event.init(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
     title: {
       type: DataTypes.STRING,

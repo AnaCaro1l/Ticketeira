@@ -2,9 +2,15 @@ import { api } from './api';
 
 export interface Event {
   id: number;
+  userId?: number;
+  creator?: {
+    id: number;
+    name: string;
+    email: string;
+  };
   title: string;
   description: string;
-  date: string; 
+  date: string;
   time: string;
   location: string;
   imageUrl?: string;
@@ -16,6 +22,7 @@ export interface Event {
     name: string;
     description?: string;
     price: number | string;
+    totalQuantity?: number;
     availableQuantity: number;
   }[];
 }
@@ -23,6 +30,15 @@ export interface Event {
 export const eventService = {
   createEvent: async (formData: FormData) => {
     const response = await api.post('/events', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+
+  updateEvent: async (id: string, formData: FormData) => {
+    const response = await api.put(`/events/${id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

@@ -40,6 +40,9 @@ export const CheckoutController = {
         }
 
         ticketType.availableQuantity -= item.quantity;
+        if (ticketType.availableQuantity < 0) {
+          ticketType.availableQuantity = 0;
+        }
         await ticketType.save({ transaction });
 
         totalAmount += Number(ticketType.price) * item.quantity;

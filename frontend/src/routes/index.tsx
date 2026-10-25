@@ -23,6 +23,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
 
         <Route path="/event/create" element={<ProtectedRoute><MainLayout><CreateEvent /></MainLayout></ProtectedRoute>} />
+        <Route path="/event/:id/edit" element={<ProtectedRoute><MainLayout><CreateEvent /></MainLayout></ProtectedRoute>} />
         <Route path="/event/:id" element={<MainLayout><EventDetails /></MainLayout>} />
         <Route path="/checkout" element={<ProtectedRoute><MainLayout><Checkout /></MainLayout></ProtectedRoute>} />
 

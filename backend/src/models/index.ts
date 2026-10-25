@@ -3,8 +3,12 @@ import { Event } from './Event';
 import { Ticket } from './Ticket';
 import { Order } from './Order';
 import { UserTicket } from './UserTicket';
+
 User.hasMany(Order, { foreignKey: 'userId' });
 Order.belongsTo(User, { foreignKey: 'userId' });
+
+User.hasMany(Event, { foreignKey: 'userId', as: 'createdEvents' });
+Event.belongsTo(User, { foreignKey: 'userId', as: 'creator' });
 
 Order.hasMany(UserTicket, { foreignKey: 'orderId' });
 UserTicket.belongsTo(Order, { foreignKey: 'orderId' });

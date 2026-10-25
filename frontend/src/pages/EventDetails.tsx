@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Calendar, Clock, MapPin, Minus, Plus, ArrowRight } from "lucide-react";
+import { Calendar, Clock, MapPin, Minus, Plus, ArrowRight, Pencil } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { useNavigate, useParams } from "react-router-dom";
 import { eventService, type Event } from "../services/eventsService";
 import defaultEventImage from "../assets/images/DefaultImage.png";
 import { formatarDataBR } from '../utils/date';
+import { authService } from '../services/authService';
 
 type TicketOption = {
   id: number;
@@ -41,6 +42,8 @@ export const EventDetails: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [tickets, setTickets] = useState<TicketOption[]>([]);
+  const currentUser = authService.getUser();
+  const isOwner = Number(currentUser?.id) === Number(event?.userId);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -115,9 +118,23 @@ export const EventDetails: React.FC = () => {
       </div>
 
       <div className="max-w-3xl mx-auto px-2 mt-6 space-y-8">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
-          {event.title}
-        </h1>
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+            {event.title}
+          </h1>
+
+          {isOwner && (
+            <Button
+              type="button"
+              variant="light"
+              onClick={() => navigate(`/event/${event.id}/edit`)}
+              className="!px-4 !py-2.5 flex items-center gap-2 shrink-0"
+            >
+              <Pencil size={16} />
+              Editar
+            </Button>
+          )}
+        </div>
 
         <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm space-y-4">
           <div className="flex items-start gap-4">

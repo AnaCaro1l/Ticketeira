@@ -41,8 +41,7 @@ const start = async () => {
     await sequelize.authenticate();
     console.log('Conexão com o MySQL estabelecida com sucesso.');
 
-    await sequelize.sync({ alter: true });
-    console.log('Tabelas sincronizadas com o banco de dados.');
+    console.log('Schema controlado por migrações do Sequelize.');
 
     await fastify.listen({ port: 3333 });
     console.log('Servidor rodando em http://localhost:3333');

@@ -8,6 +8,7 @@ export class Ticket extends Model {
   declare name: string;
   declare description: string;
   declare price: number;
+  declare totalQuantity: number;
   declare availableQuantity: number;
 }
 
@@ -38,9 +39,15 @@ Ticket.init(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
+    totalQuantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
     availableQuantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
   },
   {
